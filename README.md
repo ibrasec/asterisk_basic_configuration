@@ -341,3 +341,17 @@ Append the below line to your previously configured users
     host=dynamic
 
     
+Don't forget to reload the sip from inside asterisk 
+   CLI> sip reload
+   
+   
+   
+Now you have to add the 'incoming' context to your extensions.conf file
+
+add the below to your extensions.conf
+
+    [incoming]
+    exten => 991123100,1,Goto(phones,100,1)    ; The external number 99123100 is only able to 
+                                               ; only call 100 from the phones context
+                                               
+   
