@@ -56,17 +56,17 @@ $ make install
 
 start asterisk
 -------------
-$ asterisk -cvvv 
-*CLI> 
-*CLI> 
-*CLI> sip show peers
+    $ asterisk -cvvv 
+    *CLI> 
+    *CLI> 
+    *CLI> sip show peers
 
 CTRL+C  exit and stop the process
 We need a start script to automatically start the asterisk after reboot the server
 
 
-vi /etc/asterisk/asterisk.conf
-uncomment live-dangerously     on
+    vi /etc/asterisk/asterisk.conf
+    uncomment live-dangerously     on
 
 
 
@@ -80,85 +80,89 @@ Network setup
 
 you might have to change the linux network setting
 
-sudo vi /etc/network/interface
-iface eth0 inet static
-    address 10.1.1.10
-    netmask 255.255.255.0
-    gateway 10.1.1.1
+    sudo vi /etc/network/interface
+    iface eth0 inet static
+        address 10.1.1.10
+        netmask 255.255.255.0
+        gateway 10.1.1.1
 
-sudo service networking restart
+    sudo service networking restart
 
 - Then install dhcp server
- sudo apt-get install dhcpd
- sudo vi /etc/default/udhcp
+ 
+      sudo apt-get install dhcpd
+      sudo vi /etc/default/udhcp
     # comment the following line to enable
-    DHCPD_ENABLED="NO"    <<<< Change this to "YES"
- sudo vi /etc/udhcp.conf
+      DHCPD_ENABLED="NO"    <<<< Change this to "YES"
+      sudo vi /etc/udhcp.conf
  # The start and end of the IP lease block
- start      10.1.1.11
- end        10.1.1.200
+     start      10.1.1.11
+     end        10.1.1.200
 
  # the interface that udhcpd will use
- interface      eth0    <<< change it to your interaface enp3s0
+    interface      eth0    <<< change it to your interaface enp3s0
 
  #Examples
- opt    dns     1.1.1.1
- opion  subnet  255.255.255.0
- opt    router  10.1.1.1
- option win     x.x.x.x    <<< delete this
- option dns     x.x.x.x     <<< delete this
- option domain  local
- option lease   864000
+
+    opt    dns     1.1.1.1
+    opion  subnet  255.255.255.0
+    opt    router  10.1.1.1
+    option win     x.x.x.x    <<< delete this
+    option dns     x.x.x.x     <<< delete this
+    option domain  local
+    option lease   864000
 
 -Then start the dhcpd
- sudo /etc/init.d/udhcpd start
+    
+    sudo /etc/init.d/udhcpd start
 
 
 - Now check your time
-$ date
-$ sudo apt-get install ntp
-$ sudo /etc/init.d/ntp stop
-$ ntpdate pool.ntp.org
-$ sudo /etc/init.d/ntp start
-
-
-
-
+    
+      $ date
+      $ sudo apt-get install ntp
+      $ sudo /etc/init.d/ntp stop
+      $ ntpdate pool.ntp.org
+      $ sudo /etc/init.d/ntp start
 
 
 
 peer configuration
 ------------------
 everything about peers is stored in /etc/asterisk/sip.conf
-$ sudo cp /etc/asterisk/sip.conf /etc/asterisk/sip.conf.orig
-$ sudo vi /etc/asterisk/sip.conf
- CTRL+C
- :g/^\s*;/d              # this is to delete any comment
- :g/^$/d                # this is to delete any empty line
+
+    $ sudo cp /etc/asterisk/sip.conf /etc/asterisk/sip.conf.orig
+    $ sudo vi /etc/asterisk/sip.conf
+    CTRL+C
+    :g/^\s*;/d              # this is to delete any comment
+    :g/^$/d                # this is to delete any empty line
 
 
 
 add this line
-[general]
-qualify=yes    # this is to qualify the connection before it builts up
+      
+    [general]
+    qualify=yes    # this is to qualify the connection before it builts up
 
 
 Now let's create the peer
-[ahmed]
-    type=friend     # means that can recieve/send calls (bidirection)
-    context=phones
-    allow=ulaw,alaw    #isdn codecs
-    secret=123456789
-    host=dynamic       # no need to know the ip address of the peer
+      
+    [ahmed]
+      type=friend     # means that can recieve/send calls (bidirection)
+      context=phones
+      allow=ulaw,alaw    #isdn codecs
+      secret=123456789
+      host=dynamic       # no need to know the ip address of the peer
     
 
 then create another use
-[usama]
-    type=friend     # means that can recieve/send calls (bidirection)
-    context=phones
-    allow=ulaw,alaw    #isdn codecs
-    secret=123456789
-    host=dynamic       # no need to know the ip address of the peer
+  
+    [usama]
+      type=friend     # means that can recieve/send calls (bidirection)
+      context=phones
+      allow=ulaw,alaw    #isdn codecs
+      secret=123456789
+      host=dynamic       # no need to know the ip address of the peer
 
 
 
