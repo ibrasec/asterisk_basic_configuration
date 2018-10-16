@@ -299,11 +299,11 @@ same =>  n,Hangup               ; the server hangs up
 playback
 -------
 
-exten => 200,1,NoOp(First Line)     ; the server looks for the phone number 100
-same =>  n,NoOp(Second Line)    ; the server looks again for the phone number 100
-same =>  n,Playback( ? )          ; to dial 100
-same =>  n,Dial(SIP/ibrahim)       ; to dial 100
-same =>  n,Hangup               ; the server hangs up
+    exten => 200,1,NoOp(First Line)     ; the server looks for the phone number 100
+    same =>  n,NoOp(Second Line)    ; the server looks again for the phone number 100
+    same =>  n,Playback( ? )          ; to dial 100
+    same =>  n,Dial(SIP/ibrahim)       ; to dial 100
+    same =>  n,Hangup               ; the server hangs up
 
 
 Go to 
@@ -311,15 +311,33 @@ cd /var/lib/asterisk
 all your playback are in here under the sounds directory
 they have tt at the beginning
 
-cd /var/lib/asterisk/sounds/en/
-ls -la tt-*
+    cd /var/lib/asterisk/sounds/en/
+    ls -la tt-*
+    
+    sudo vi /etc/asterisk/extension.conf
+    [phones]
+    exten => 200,1,NoOp(First Line)     ; the server looks for the phone number 100
+    same =>  n,NoOp(Second Line)    ; the server looks again for the phone number 100
+    same =>  n,Playback(tt-monkeys)          ; to dial 100
+    same =>  n,Dial(SIP/ibrahim)       ; to dial 100
+    same =>  n,Hangup               ; the server hangs up
 
-sudo vi /etc/asterisk/extension.conf
-[phones]
-exten => 200,1,NoOp(First Line)     ; the server looks for the phone number 100
-same =>  n,NoOp(Second Line)    ; the server looks again for the phone number 100
-same =>  n,Playback(tt-monkeys)          ; to dial 100
-same =>  n,Dial(SIP/ibrahim)       ; to dial 100
-same =>  n,Hangup               ; the server hangs up
+
+Incoming call simulation
+---------------------
+To allow someone from outside world to call someone from the inside
+
+we have to update both the sip.conf and the extensions.conf
 
 
+[Update sip.conf]
+
+Append the below line to your previously configured users
+    [outside]
+    type=friend
+    context=incoming
+    allow=ulaw,alaw
+    secret=1111111103   ;this could be any number
+    host=dynamic
+
+    
