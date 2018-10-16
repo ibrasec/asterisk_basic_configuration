@@ -353,5 +353,48 @@ add the below to your extensions.conf
     [incoming]
     exten => 991123100,1,Goto(phones,100,1)    ; The external number 99123100 is only able to 
                                                ; only call 100 from the phones context
-                                               
+
+
+Asterisk Outgoing Call Configuration:
+-------------------------------------
+It is a good practice to have at least 3 contexts
+
+- incomming
+- outgoing
+- internal / or in out case phones
+
+This esential for country policy, because some companies/countries don't allow
+
+ certain country numbers to call their phones and vice versa, so having more than 1 extension
+ 
+ gives you a greate control of what can be called and what can't be called ( filtration )
+ 
+ 
+ Add the below to your extensions.conf
+ 
+    [outgoing]
+    exten => 8888, 1, Dial(SIP/outside)
+
+Now what is going to happen if someone from internal want to call 88888
+
+is that, astersik will search inside the phones context looking for 88888
+
+and it will find nothing and it will stop...
+
+So we have to add another ( route ) if you want to say, to forward unknown routes to
+
+the another exit point....
+
+Add the below to your extensions.conf
+
+    [phones]
+    .
+    .
+    .
+    exten => 8888,1,Goto(outgoing,8888,1)    
+
+
+CLI> dialplan reload
+
+
    
